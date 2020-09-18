@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.SNS201.mapper.HashtagMapper">
+
+    <select id="selectHashtag" resultType="Hashtag">
+		SELECT  *
+		  FROM  hashtag
+		 WHERE  postNo    = #{postNo}
+	</select>
+
+    <select id="selectHashtagBySearch" parameterType="String" resultType="Hashtag">
+        SELECT  *
+          FROM  hashtag
+         WHERE  hashtagContent LIKE CONCAT('%', #{keyword}, '%')
+    </select>
+
+    <insert id="insertHashtag" parameterType="Hashtag">
+        INSERT INTO hashtag(
+            postNo,
+            hashtagContent
+        ) VALUES (
+            #{postNo},
+            #{hashtagContent}
+        )
+    </insert>
+
+    <delete id="deleteHashtag" parameterType="int">
+		DELETE
+		  FROM  hashtag
+		 WHERE  hashtagNo   = #{hashtagNo}
+	</delete>
+
+
+
+</mapper>

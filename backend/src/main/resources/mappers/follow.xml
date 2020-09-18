@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.SNS201.mapper.FollowMapper">
+    <select id="selectFollowMe" resultType="Follow" parameterType="int">
+		SELECT  *
+		  FROM  follow
+		 WHERE  you = #{memberNo}
+		 ORDER  BY followDate ASC
+	</select>
+
+    <select id="selectFollowYou" resultType="Follow" parameterType="int">
+		SELECT  *
+		  FROM  follow
+		 WHERE  me = #{memberNo}
+		 ORDER  BY followDate ASC
+	</select>
+
+    <insert id="insertFollow" parameterType="Follow">
+        INSERT INTO follow(
+        me,
+        you,
+        followDate
+        ) VALUES (
+        #{me},
+        #{you},
+        now()
+        )
+    </insert>
+
+    <delete id="deleteFollow" parameterType="int">
+		DELETE
+		  FROM follow
+		 WHERE me = #{me} AND you = #{you}
+	</delete>
+
+	<select id="countFollowMe" parameterType="int" resultType="INTEGER">
+		SELECT  COUNT(*)
+		  FROM  follow
+		 WHERE  you = #{memberNo}
+	</select>
+
+	<select id="countFollowYou" parameterType="int" resultType="INTEGER">
+		SELECT  COUNT(*)
+		  FROM  follow
+		 WHERE  me = #{memberNo}
+	</select>
+
+</mapper>

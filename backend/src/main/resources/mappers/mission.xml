@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.SNS201.mapper.MissionMapper"> <!-- mybatis는 namespace필수!! -->
+    <select id="selectMission" resultType="Mission">
+        SELECT  *
+          FROM  mission
+         ORDER  BY missionNo
+    </select>
+
+    <select id="selectMissionByMember" resultType="Mission">
+        SELECT 	*
+          FROM	mission
+         WHERE	1 = 1 AND
+                missionNo IN (
+                    SELECT  missionNo
+                      FROM	entry
+                     WHERE	memberNo = #{memberNo}
+                )
+         ORDER  BY missionNo
+    </select>
+
+    <select id="selectMissionByNo" resultType="Mission">
+        SELECT  *
+          FROM  mission
+         WHERE  missionNo = #{missionNo}
+    </select>
+
+    <select id="selectMissionByTitle" resultType="Mission">
+        SELECT  *
+          FROM  mission
+         WHERE  missionTitle LIKE CONCAT('%',#{word},'%')
+    </select>
+    
+    <insert id="insertMission" parameterType="Mission">
+        INSERT INTO mission(
+            missionTitle,
+            startDate,
+            endDate,
+            isStart,
+            memberNo,
+            point,
+            minusPoint,
+            cutCnt,
+            joinMem,
+            missionPhoto,
+            missionCat,
+            description
+        ) VALUES (
+            #{missionTitle},
+            #{startDate},
+            #{endDate},
+            #{isStart},
+            #{memberNo},
+            #{point},
+            #{minusPoint},
+            #{cutCnt},
+            #{joinMem},
+            #{missionPhoto},
+            #{missionCat},
+            #{description}
+        )
+    </insert>
+    
+    <update id="updateMission" parameterType="Mission">
+        UPDATE mission
+            SET missionTitle    = #{missionTitle},
+                startDate       = #{startDate},
+                endDate         = #{endDate},
+                isStart         = #{isStart},
+                point           = #{point},
+                minusPoint      = #{minusPoint},
+                cutCnt          = #{cutCnt},
+                joinMem         = #{joinMem},
+                missionPhoto    = #{missionPhoto},
+                missionCat      = #{missionCat},
+                description     = #{description}
+         WHERE  missionNo = #{missionNo} <!-- 이거 안넣은놈 누구냐 진짜 -->
+    </update>
+
+    <delete id="deleteMission" parameterType="int">
+        DELETE FROM mission WHERE missionNo = #{missionNo}
+    </delete>
+
+    <select id="selectMissionByCategory" resultType="Mission">
+        SELECT *
+         FROM mission
+        WHERE missionCat = #{missionCat};
+    </select>
+
+    <select id="selectMaxCount" resultType="int">
+        SELECT MAX(missionNo)
+         FROM mission;
+    </select>
+
+    <select id="selectCountByMissionNo" resultType="int">
+        SELECT COUNT(*)
+         FROM entry
+        where missionNo = #{missionNo};
+    </select>
+</mapper>

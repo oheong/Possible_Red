@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.SNS201.mapper.CommentMapper">
+    <select id="selectComment" resultType="Comment">
+		SELECT  c.*, m.nickname as nickname
+		  FROM  comment c, member m
+		 WHERE  postNo    = #{postNo} AND c.memberNo = m.memberNo
+	</select>
+
+    <insert id="insertComment" parameterType="Comment">
+        INSERT INTO comment(
+            memberNo,
+            commentContent,
+            postNo,
+            commentDate
+        ) VALUES (
+            #{memberNo},
+            #{commentContent},
+            #{postNo},
+            now()
+        )
+    </insert>
+
+    <update id="updateComment" parameterType="Comment">
+        UPDATE  comment
+           SET  commentContent  = #{commentContent},
+                commentDate     = now()
+        WHERE   commentNo       = #{commentNo}
+    </update>
+
+    <delete id="deleteComment" parameterType="int">
+		DELETE
+		  FROM  comment
+		 WHERE  commentNo   = #{commentNo}
+	</delete>
+
+</mapper>

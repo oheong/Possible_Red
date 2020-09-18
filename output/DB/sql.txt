@@ -1,0 +1,180 @@
+﻿-- 테이블 순서는 관계를 고려하여 한 번에 실행해도 에러가 발생하지 않게 정렬되었습니다.
+
+-- member Table Create SQL
+CREATE TABLE member
+(
+    `memberNo`     INT             NOT NULL    AUTO_INCREMENT COMMENT '회원번호', 
+    `email`        VARCHAR(255)    NOT NULL    COMMENT '이메일', 
+    `pwd`          VARCHAR(255)    NOT NULL    COMMENT '비밀번호', 
+    `nickname`     VARCHAR(255)    NOT NULL    COMMENT '닉네임', 
+    `point`        INT             NOT NULL    COMMENT '포인트', 
+    `stateMent`    VARCHAR(255)    NULL        COMMENT '상태메세지', 
+    `memberPhoto`  VARCHAR(255)    NULL        COMMENT '프로필 사진', 
+    PRIMARY KEY (memberNo)
+);
+
+ALTER TABLE member COMMENT '회원정보';
+
+
+-- member Table Create SQL
+CREATE TABLE mission
+(
+    `missionNo`     INT             NOT NULL    AUTO_INCREMENT COMMENT '미션번호', 
+    `missionTitle`  VARCHAR(255)    NOT NULL    COMMENT '미션제목', 
+    `startDate`     DATE            NOT NULL    COMMENT '시작일', 
+    `endDate`       DATE            NOT NULL    COMMENT '마감일', 
+    `isStart`       TINYINT         NOT NULL    COMMENT '진행여부', 
+    `memberNo`      INT             NOT NULL    COMMENT '방장', 
+    `point`         INT             NOT NULL    COMMENT '배당포인트', 
+    `minusPoint`    INT             NOT NULL    COMMENT '차감포인트', 
+    `cutCnt`        INT             NOT NULL    COMMENT '커트라인', 
+    `joinMem`       INT             NOT NULL    COMMENT '참여인원', 
+    `missionPhoto`  VARCHAR(255)    NULL        COMMENT '미션 사진', 
+    `missionCat`    VARCHAR(255)    NOT NULL    COMMENT '미션 카테고리', 
+    PRIMARY KEY (missionNo)
+);
+
+ALTER TABLE mission COMMENT '미션';
+
+ALTER TABLE mission
+    ADD CONSTRAINT FK_mission_memberNo_member_memberNo FOREIGN KEY (memberNo)
+        REFERENCES member (memberNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- member Table Create SQL
+CREATE TABLE post
+(
+    `postNo`       INT             NOT NULL    AUTO_INCREMENT COMMENT '글 번호', 
+    `memberNo`     INT             NOT NULL    COMMENT '작성자', 
+    `postDate`     DATE            NOT NULL    COMMENT '작성일', 
+    `postPhoto`    VARCHAR(255)    NOT NULL    COMMENT '포스트 사진', 
+    `postContent`  VARCHAR(255)    NOT NULL    COMMENT '글 내용', 
+    `missionNo`    INT             NOT NULL    COMMENT '미션 번호', 
+    PRIMARY KEY (postNo)
+);
+
+ALTER TABLE post COMMENT '게시글(미션 수행 시 작성할 게시글)';
+
+ALTER TABLE post
+    ADD CONSTRAINT FK_post_missionNo_mission_missionNo FOREIGN KEY (missionNo)
+        REFERENCES mission (missionNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE post
+    ADD CONSTRAINT FK_post_memberNo_member_memberNo FOREIGN KEY (memberNo)
+        REFERENCES member (memberNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- member Table Create SQL
+CREATE TABLE entry
+(
+    `entryNo`    INT    NOT NULL    AUTO_INCREMENT COMMENT '참여자 번호', 
+    `memberNo`   INT    NOT NULL    COMMENT '회원번호', 
+    `missionNo`  INT    NOT NULL    COMMENT '미션번호', 
+    `reward`     INT    NOT NULL    COMMENT '미션리워드퍼센트', 
+    `nonCnt`     INT    NOT NULL    COMMENT '참여안한카운트', 
+    PRIMARY KEY (entryNo)
+);
+
+ALTER TABLE entry COMMENT '참여자(미션에 참여하는 사람)';
+
+ALTER TABLE entry
+    ADD CONSTRAINT FK_entry_missionNo_mission_missionNo FOREIGN KEY (missionNo)
+        REFERENCES mission (missionNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE entry
+    ADD CONSTRAINT FK_entry_memberNo_member_memberNo FOREIGN KEY (memberNo)
+        REFERENCES member (memberNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- member Table Create SQL
+CREATE TABLE comment
+(
+    `commentNo`       INT             NOT NULL    AUTO_INCREMENT COMMENT '댓글 번호', 
+    `memberNo`        INT             NOT NULL    COMMENT '댓글 작성자', 
+    `commentContent`  VARCHAR(255)    NOT NULL    COMMENT '댓글 내용', 
+    `postNo`          INT             NOT NULL    COMMENT '글 번호', 
+    `commentDate`     DATE            NOT NULL    COMMENT '작성날짜', 
+    PRIMARY KEY (commentNo)
+);
+
+ALTER TABLE comment COMMENT 'FK_comment_memberNo_member_memberNo';
+
+ALTER TABLE comment
+    ADD CONSTRAINT FK_comment_postNo_post_postNo FOREIGN KEY (postNo)
+        REFERENCES post (postNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE comment
+    ADD CONSTRAINT FK_comment_memberNo_member_memberNo FOREIGN KEY (memberNo)
+        REFERENCES member (memberNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- member Table Create SQL
+CREATE TABLE likey
+(
+    `likeyNo`   INT     NOT NULL    AUTO_INCREMENT COMMENT '좋아요 번호', 
+    `memberNo`  INT     NOT NULL    COMMENT '작성자', 
+    `postNo`    INT     NOT NULL    COMMENT '글 번호', 
+    `pushDate`  DATE    NOT NULL    COMMENT '누른 날짜', 
+    PRIMARY KEY (likeyNo)
+);
+
+ALTER TABLE likey COMMENT '좋아요';
+
+ALTER TABLE likey
+    ADD CONSTRAINT FK_likey_memberNo_member_memberNo FOREIGN KEY (memberNo)
+        REFERENCES member (memberNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE likey
+    ADD CONSTRAINT FK_likey_postNo_post_postNo FOREIGN KEY (postNo)
+        REFERENCES post (postNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- member Table Create SQL
+CREATE TABLE follow
+(
+    `followNo`    INT     NOT NULL    AUTO_INCREMENT COMMENT '팔로우 번호', 
+    `me`          INT     NOT NULL    COMMENT '내가', 
+    `you`         INT     NOT NULL    COMMENT '니꺼볼래', 
+    `followDate`  DATE    NOT NULL    COMMENT '날짜', 
+    PRIMARY KEY (followNo)
+);
+
+ALTER TABLE follow COMMENT '팔로우 현황';
+
+ALTER TABLE follow
+    ADD CONSTRAINT FK_follow_me_member_memberNo FOREIGN KEY (me)
+        REFERENCES member (memberNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE follow
+    ADD CONSTRAINT FK_follow_you_member_memberNo FOREIGN KEY (you)
+        REFERENCES member (memberNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- member Table Create SQL
+CREATE TABLE hashtag
+(
+    `hashtagNo`       INT             NOT NULL    AUTO_INCREMENT COMMENT '해시태그 번호', 
+    `postNo`          INT             NOT NULL    COMMENT '포스트 번호', 
+    `hashtagContent`  VARCHAR(255)    NOT NULL    COMMENT '해시태그 내용', 
+    PRIMARY KEY (hashtagNo)
+);
+
+ALTER TABLE hashtag COMMENT '해시태그';
+
+ALTER TABLE hashtag
+    ADD CONSTRAINT FK_hashtag_postNo_post_postNo FOREIGN KEY (postNo)
+        REFERENCES post (postNo) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+
+-- member Table Create SQL
+CREATE TABLE Category
+(
+    `categoryNo`       INT             NOT NULL    COMMENT '카테고리 번호', 
+    `categoryContent`  VARCHAR(100)    NOT NULL    COMMENT '카테고리 내용', 
+    PRIMARY KEY (categoryNo)
+);
+
+ALTER TABLE Category COMMENT '미션 카테고리';
+
+
+ALTER TABLE mission ADD description VARCHAR(255) NOT NULL; -- 컬럼추가

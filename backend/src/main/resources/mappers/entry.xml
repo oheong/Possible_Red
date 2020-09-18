@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.SNS201.mapper.EntryMapper">
+    <select id="selectEntry" resultType="Entry">
+		SELECT  *
+		  FROM  entry
+		 ORDER  BY entryNo
+	</select>
+
+    <select id="selectEntryByNo" resultType="Entry">
+		SELECT  *
+		  FROM  entry
+		 WHERE  entryNo    = #{entryNo}
+	</select>
+
+    <insert id="insertEntry" parameterType="Entry">
+        INSERT INTO entry(
+        memberNo,
+        missionNo,
+        reward,
+        nonCnt
+        ) VALUES (
+        #{memberNo},
+        #{missionNo},
+        #{reward},
+        #{nonCnt}
+        )
+    </insert>
+
+    <update id="updateEntry" parameterType="Entry">
+        UPDATE  entry
+           SET  reward    = #{reward},
+                nonCnt    = #{nonCnt}
+        WHERE   entryNo   = #{entryNo}
+    </update>
+
+    <delete id="deleteEntry" parameterType="int">
+		DELETE FROM entry WHERE entryNo   = #{entryNo}
+	</delete>
+
+    <select id="selectCountByMemberNoAndMissionNo" resultType="int">
+        SELECT COUNT(*)
+         FROM entry
+        WHERE
+                memberNo = #{memberNo}
+            AND missionNo= #{missionNo};
+    </select>
+
+    <select id="selectMemberByMissionNo" resultType="Entry">
+        SELECT *
+         FROM entry
+        WHERE missionNo= #{missionNo};
+    </select>
+
+</mapper>
